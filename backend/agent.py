@@ -1,10 +1,11 @@
-import random
 from economy import Economy
+from brain import Brain
 
 
 class AI:
 
     def __init__(self, ai_id="AI-001"):
+
         self.ai_id = ai_id
         self.goal = "Survive and grow capital"
         self.work = "Looking for opportunities"
@@ -13,24 +14,43 @@ class AI:
 
         self.memory = []
 
+        # AI brain
+        self.brain = Brain()
+
     def observe(self):
+
         print("\n👁️ OBSERVING")
+
         print(f"Capital: ₹{self.economy.balance}")
         print(f"Income: ₹{self.economy.total_income}")
         print(f"Expenses: ₹{self.economy.total_expenses}")
 
     def think(self):
+
         print("\n🧠 THINKING")
 
-        actions = [
-            "work",
-            "research",
-            "save"
-        ]
+        situation = f"""
+AI ID: {self.ai_id}
 
-        decision = random.choice(actions)
+Goal:
+{self.goal}
 
-        print(f"Decision: {decision}")
+Current capital:
+₹{self.economy.balance}
+
+Total income:
+₹{self.economy.total_income}
+
+Total expenses:
+₹{self.economy.total_expenses}
+
+Previous memories:
+{self.memory[-5:]}
+"""
+
+        decision = self.brain.think(situation)
+
+        print(f"AI Decision: {decision}")
 
         return decision
 
@@ -38,41 +58,46 @@ class AI:
 
         print("\n⚙️ ACTING")
 
-        if decision == "work":
+        if decision == "WORK":
 
             self.work = "Working on a business opportunity"
 
-            income = random.randint(500, 2000)
+            income = 0
 
+            print("AI is attempting to generate income...")
+
+            # Temporary simulation
+            # Later this will be replaced with real business experiments
             self.economy.earn(income)
 
             self.memory.append(
-                f"Worked and earned ₹{income}"
+                "Attempted to work. No guaranteed income."
             )
 
-        elif decision == "research":
+        elif decision == "RESEARCH":
 
             self.work = "Researching money-making opportunities"
 
-            cost = random.randint(100, 500)
+            cost = 300
 
-            self.economy.spend(cost)
+            if self.economy.spend(cost):
+
+                self.memory.append(
+                    f"Spent ₹{cost} researching opportunities."
+                )
+
+        elif decision == "SAVE":
+
+            self.work = "Preserving capital"
 
             self.memory.append(
-                f"Research cost ₹{cost}"
+                "Decided to preserve capital."
             )
 
-        elif decision == "save":
-
-            self.work = "Saving capital"
-
-            self.memory.append(
-                "Saved capital"
-            )
-
-            print("🏦 AI decided to save.")
+            print("🏦 AI decided to save capital.")
 
     def is_alive(self):
+
         return self.economy.is_alive()
 
     def show(self):
@@ -87,3 +112,5 @@ class AI:
         self.economy.show()
 
         print(f"🧠 Memories: {len(self.memory)}")
+
+   
